@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Multi Time Zone Digital Clock</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #212121;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      margin-bottom: 2rem;
+    }
+    .clock-container {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .clock {
+      background: #333;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px #0002;
+      padding: 1.5rem 2rem;
+      margin: 1rem 0;
+      min-width: 220px;
+      text-align: center;
+    }
+    .clock .zone {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #80cbc4;
+      font-weight: bold;
+    }
+    .clock .time {
+      font-size: 2rem;
+      letter-spacing: 2px;
+      font-family: 'Courier New', monospace;
+    }
+    .clock .date {
+      font-size: 1rem;
+      margin-top: 0.5rem;
+      color: #b0bec5;
+    }
+  </style>
+</head>
+<body>
+  <h1>Multi Time Zone Digital Clock</h1>
+  <div class="clock-container" id="clockContainer">
+    <!-- Clocks will be injected here -->
+  </div>
+  <script>
+    // List of time zones to display
+    const zones = [
+      { name: "Seoul (KST)", tz: "Asia/Seoul" },
+      { name: "UTC", tz: "UTC" },
+      { name: "New York (EST/EDT)", tz: "America/New_York" },
+      { name: "London (BST/GMT)", tz: "Europe/London" },
+      { name: "Tokyo (JST)", tz: "Asia/Tokyo" },
+      { name: "Sydney (AEST/AEDT)", tz: "Australia/Sydney" }
+    ];
+
+    // Function to format time
+    function getTimeString(date, timeZone) {
+      return date.toLocaleTimeString('en-US', {
+        timeZone,
+        hour12: false,
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      });
+    }
+
+    function getDateString(date, timeZone) {
+      return date.toLocaleDateString('en-US', {
+        timeZone,
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        weekday: 'short'
+      });
+    }
+
+    // Create clock elements
+    function createClocks() {
+      const container = document.getElementById('clockContainer');
+      zones.forEach((zone, idx) => {
+        const div = document.createElement('div');
+        div.className = 'clock';
+        div.innerHTML = `
+          <div class="zone">${zone.name}</div>
+          <div class="time" id="clock-time-${idx}"></div>
+          <div class="date" id="clock-date-${idx}"></div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Update all clocks
+    function updateClocks() {
+      const now = new Date();
+      zones.forEach((zone, idx) => {
+        document.getElementById(`clock-time-${idx}`).textContent = getTimeString(now, zone.tz);
+        document.getElementById(`clock-date-${idx}`).textContent = getDateString(now, zone.tz);
+      });
+    }
+
+    createClocks();
+    updateClocks();
+    setInterval(updateClocks, 1000);
+  </script>
+</body>
+</html>
